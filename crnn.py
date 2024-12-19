@@ -52,11 +52,12 @@ class CTCLoss(tf.keras.losses.Loss):
         config = super(CTCLoss, self).get_config()
         return config
 
-def create_model( LR = 0.001):
+def create_model(input_shape=(64, 200, 1), LR = 0.001):
     
+    print(f'Input shape: {input_shape}')
     
     model = tf.keras.Sequential([
-        tf.keras.layers.Input(shape=(input_shape)),
+        tf.keras.layers.Input(shape=input_shape),
         tf.keras.layers.Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2)),
         tf.keras.layers.Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu'),
