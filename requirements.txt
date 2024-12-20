@@ -4,3 +4,4 @@ numpy==1.26.3
 opencv-python==4.10.0.82
 altair==4.0.0
 pytesseract
+scikit-learn

@@ -1,2 +1,5 @@
 dataset
 venv/*
+*.weights.*
+*.h5
+*.pyc

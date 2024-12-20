@@ -4,10 +4,12 @@ import pytesseract
 import tensorflow as tf
 import numpy as np
 import pickle
-from crnn import load_saved_model, get_model_output
+from crnn import load_saved_model, get_model_output, nums_to_string
 from preprocess import crnn_preprocess_image, tesseract_preprocess_image, clean_text, traditional_preprocess
 from utils import format_to_datestring
-
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from constant import INDEX_TO_CHAR_TRADITIONAL
 
 SVM_MODEL = 'svm-rbf.pkl'
 RANDOM_FOREST_MODEL = 'random-forest.pkl'
@@ -28,7 +30,7 @@ def load_crnn_model(input_shape=(64, 200, 1)):
 def main():
     st.title("Expiry Date Recognition")
 
-    model_choice = st.selectbox("Select Model", ("Tesseract", "CRNN"))
+    model_choice = st.selectbox("Select Model", ("Tesseract", "CRNN", "SVM", "Random Forest"))
 
     uploaded_file = st.file_uploader("Upload Image of Expiry Date", type=["png", "jpg", "jpeg"])
 
@@ -69,27 +71,34 @@ def main():
 
             elif model_choice == 'SVM':
                 
-                processed_images = traditional_preprocess(preprocessed_image)
+                processed_images, _ = traditional_preprocess(image)
                 
                 with open(SVM_MODEL, 'rb') as file:
                     model = pickle.load(file)
                     
                 predictions = model.predict(processed_images)
                 
+                print(f'SVM pred: {predictions}')
+
                 st.write("### Detected Text using SVM")
-                st.write("".join(predictions))
+                pred_text = ''.join([INDEX_TO_CHAR_TRADITIONAL[idx] for idx in predictions])
+                st.write(format_to_datestring(pred_text))            
+                    
+            elif model_choice == 'Random Forest':
                 
-            elif model_choice == 'random-forest':
-                
-                processed_images = traditional_preprocess(preprocessed_image)
+                processed_images, _ = traditional_preprocess(image)
                 
                 with open(RANDOM_FOREST_MODEL, 'rb') as file:
                     model = pickle.load(file)
                     
                 predictions = model.predict(processed_images)
                 
+                print(f'Random forest pred: {predictions}')
+                
                 st.write("### Detected Text using Random Forest")
-                st.write("".join(predictions))
+                
+                pred_text = ''.join([INDEX_TO_CHAR_TRADITIONAL[idx] for idx in predictions])
+                st.write(format_to_datestring(pred_text))
                 
                     
 if __name__ == "__main__":

@@ -1,0 +1,2 @@
+model_checkpoint_path: "acc_76_model.weights"
+all_model_checkpoint_paths: "acc_76_model.weights"

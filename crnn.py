@@ -108,3 +108,8 @@ def get_model_output(Y_pred):
     pred_text = ''.join([char for char in decode_label(output)])
     
     return pred_text
+
+def nums_to_string(nums):
+    text = ''.join([char for char in decode_label(nums)])
+    
+    return text
