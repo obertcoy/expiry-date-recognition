@@ -91,12 +91,12 @@ def segmented_image(image):
 DATE_IMAGE_WIDTH = 320
 DATE_IMAGE_HEIGHT = 80
 
-def traditional_preprocess(image):
+def preprocess_date_image(image):
     original_image = cv.resize(image, (DATE_IMAGE_WIDTH, DATE_IMAGE_HEIGHT))
+
     image = cv.cvtColor(original_image, cv.COLOR_BGR2GRAY)
-
     _, th3 = cv.threshold(image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-
+    
     black_count = np.sum(th3 == 0)
     white_count = np.sum(th3 == 255)
 
@@ -105,12 +105,17 @@ def traditional_preprocess(image):
     else:
         image = th3
     
+    return image, original_image
+
+def traditional_preprocess(image):
+    image, original_image = preprocess_date_image(original_image)
+
     segmented_images = segmented_image(image)
-    
+
     segmented_images = [cv.resize(image, (28, 28)) for image in segmented_images]    
     segmented_images = [image.flatten() for image in segmented_images]
     
-    return segmented_images
+    return segmented_images, original_image
 
 
 def clean_text(text):

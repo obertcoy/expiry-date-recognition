@@ -3,9 +3,15 @@ from PIL import Image
 import pytesseract
 import tensorflow as tf
 import numpy as np
+import pickle
 from crnn import load_saved_model, get_model_output
-from preprocess import crnn_preprocess_image, tesseract_preprocess_image, clean_text
+from preprocess import crnn_preprocess_image, tesseract_preprocess_image, clean_text, traditional_preprocess
 from utils import format_to_datestring
+
+
+SVM_MODEL = 'svm-rbf.pkl'
+RANDOM_FOREST_MODEL = 'random-forest.pkl'
+
 
 # Load CRNN Model
 def load_crnn_model(input_shape=(64, 200, 1)):
@@ -61,5 +67,30 @@ def main():
                 st.write("### Detected Text using CRNN")
                 st.write(result)
 
+            elif model_choice == 'SVM':
+                
+                processed_images = traditional_preprocess(preprocessed_image)
+                
+                with open(SVM_MODEL, 'rb') as file:
+                    model = pickle.load(file)
+                    
+                predictions = model.predict(processed_images)
+                
+                st.write("### Detected Text using SVM")
+                st.write("".join(predictions))
+                
+            elif model_choice == 'random-forest':
+                
+                processed_images = traditional_preprocess(preprocessed_image)
+                
+                with open(RANDOM_FOREST_MODEL, 'rb') as file:
+                    model = pickle.load(file)
+                    
+                predictions = model.predict(processed_images)
+                
+                st.write("### Detected Text using Random Forest")
+                st.write("".join(predictions))
+                
+                    
 if __name__ == "__main__":
     main()
