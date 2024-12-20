@@ -43,5 +43,75 @@ def tesseract_preprocess_image(image, resize=True):
 
     return binary
 
+def segmentate_horizontal(image):
+    vertical_pixel_count = np.sum(image == 255, axis=0)
+
+    images = []
+    current_x = 0
+    is_character = False
+    for index, count in enumerate(vertical_pixel_count):
+        if count == 0:
+            if is_character:
+                # if index - current_x > 20:
+                images.append(image[:, current_x:index])
+                is_character = False
+            current_x = index
+        else:
+            is_character = True
+        
+    return images
+
+
+def segmentate_vertical(image):
+    horizontal_pixel_count = np.sum(image == 255, axis=1)
+
+    current_y = 0
+    is_character = False
+    for index, count in enumerate(horizontal_pixel_count):
+        if count == 0:
+            if is_character:
+                image = image[current_y:index, :]
+                break
+            current_y = index
+        else:
+            is_character = True
+
+    return image
+
+def segmented_image(image):
+    images = segmentate_horizontal(image)
+    
+    images = [segmentate_vertical(image) for image in images]
+
+    images = [cv.copyMakeBorder(image, 10, 10, 10, 10, cv.BORDER_CONSTANT, value=[0, 0, 0]) for image in images]
+            
+    return images
+
+
+DATE_IMAGE_WIDTH = 320
+DATE_IMAGE_HEIGHT = 80
+
+def traditional_preprocess(image):
+    original_image = cv.resize(image, (DATE_IMAGE_WIDTH, DATE_IMAGE_HEIGHT))
+    image = cv.cvtColor(original_image, cv.COLOR_BGR2GRAY)
+
+    _, th3 = cv.threshold(image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+
+    black_count = np.sum(th3 == 0)
+    white_count = np.sum(th3 == 255)
+
+    if black_count < white_count:
+        image = cv.bitwise_not(th3)
+    else:
+        image = th3
+    
+    segmented_images = segmented_image(image)
+    
+    segmented_images = [cv.resize(image, (28, 28)) for image in segmented_images]    
+    segmented_images = [image.flatten() for image in segmented_images]
+    
+    return segmented_images
+
+
 def clean_text(text):
     return re.sub(r'[^0-9]', ' ', text).strip()
