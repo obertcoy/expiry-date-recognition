@@ -56,12 +56,14 @@ def main():
                 
                 preprocessed_image = crnn_preprocess_image(image)
                 
-                print(f'Image shape: {preprocessed_image.shape}')
+                # st.write(f'Preprocessed image shape: {preprocessed_image.shape}')
                 
                 crnn_model = load_crnn_model(input_shape= preprocessed_image.shape)
 
+                preprocessed_image = np.expand_dims(preprocessed_image, axis=0)
+
                 Y_pred = crnn_model.predict(preprocessed_image)
-                
+                                
                 output = get_model_output(Y_pred)
                 
                 result = format_to_datestring(output)
@@ -70,7 +72,7 @@ def main():
                 st.write(result)
 
             elif model_choice == 'SVM':
-                
+                                
                 processed_images, _ = traditional_preprocess(image)
                 
                 with open(SVM_MODEL, 'rb') as file:
