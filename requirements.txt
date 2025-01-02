@@ -7,4 +7,3 @@ pytesseract
 scikit-learn
 pytesseract
 tesseract-ocr
-tesseract-ocr-por
