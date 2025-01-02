@@ -6,3 +6,5 @@ altair==4.0.0
 pytesseract
 scikit-learn
 pytesseract
+tesseract-ocr
+tesseract-ocr-por
