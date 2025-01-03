@@ -7,15 +7,7 @@ import pickle
 from crnn import load_saved_model, get_model_output, nums_to_string
 from preprocess import crnn_preprocess_image, tesseract_preprocess_image, clean_text, traditional_preprocess
 from utils import format_to_datestring
-from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier
-from constant import INDEX_TO_CHAR_TRADITIONAL
 
-SVM_MODEL = 'svm-rbf.pkl'
-RANDOM_FOREST_MODEL = 'random-forest.pkl'
-
-
-# Load CRNN Model
 def load_crnn_model(input_shape=(64, 200, 1)):
     
     try:

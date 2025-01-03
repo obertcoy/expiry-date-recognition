@@ -3,3 +3,4 @@ venv/*
 *.weights
 *.pyc
 crnn/*.h5
+/!Upload/*
