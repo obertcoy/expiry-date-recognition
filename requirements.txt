@@ -1,6 +1,6 @@
 streamlit==1.11.0
 tensorflow==2.10.1
-numpy==1.26.3
+numpy
 opencv-python-headless
 altair==4.0.0
 pytesseract
