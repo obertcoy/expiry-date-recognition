@@ -52,9 +52,9 @@ class CTCLoss(tf.keras.losses.Loss):
         config = super(CTCLoss, self).get_config()
         return config
 
-def create_model(input_shape=(64, 200, 1), LR = 0.001):
+def create_model(input_shape, LR = 0.001):
     
-    print(f'Input shape: {input_shape}')
+    # print(f'Input shape: {input_shape}')
     
     model = tf.keras.Sequential([
         tf.keras.layers.Input(shape=input_shape),
@@ -81,7 +81,7 @@ def create_model(input_shape=(64, 200, 1), LR = 0.001):
 
     return model
 
-def load_saved_model(input_shape=(64, 200, 1), LR= 0.001):
+def load_saved_model(input_shape, LR= 0.001):
     
     model = create_model(input_shape=input_shape, LR=LR)
         
@@ -92,6 +92,8 @@ def load_saved_model(input_shape=(64, 200, 1), LR= 0.001):
 def decode_label(encoded) -> list:
         
     decoded = []
+    
+    print(f'Encoded: {encoded}')
 
     for char_idx in encoded:
         
@@ -104,7 +106,12 @@ def decode_label(encoded) -> list:
 def get_model_output(Y_pred):
     
     ctc_input_length = np.ones(Y_pred.shape[0]) * Y_pred.shape[1]
-    output = get_value(ctc_decode(Y_pred, input_length= ctc_input_length, greedy= True)[0][0])
+    output = get_value(ctc_decode(Y_pred, input_length= ctc_input_length, greedy= True)[0][0])[0] # Only 1 image
     pred_text = ''.join([char for char in decode_label(output)])
     
     return pred_text
+
+def nums_to_string(nums):
+    text = ''.join([char for char in decode_label(nums)])
+    
+    return text

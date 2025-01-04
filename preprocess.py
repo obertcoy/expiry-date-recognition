@@ -108,7 +108,9 @@ def preprocess_date_image(image):
     return image, original_image
 
 def traditional_preprocess(image):
-    image, original_image = preprocess_date_image(original_image)
+    image = cv.cvtColor(np.array(image), cv.COLOR_RGB2BGR)
+    
+    image, original_image = preprocess_date_image(image)
 
     segmented_images = segmented_image(image)
 

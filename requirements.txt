@@ -1,6 +1,7 @@
 streamlit==1.11.0
 tensorflow==2.10.1
-numpy==1.26.3
-opencv-python==4.10.0.82
+numpy==1.24.4
+opencv-python-headless
 altair==4.0.0
 pytesseract
+scikit-learn
